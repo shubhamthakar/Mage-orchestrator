@@ -6,24 +6,24 @@ import (
 	"net"
 	"time"
 
-	pb1 "github.com/shubhamthakar/Mage/orchestrator/proto"
-	pb "github.com/shubhamthakar/Mage/proto"
+	pb1 "github.com/shubhamthakar/Mage/datamonk/proto"
+	pb "github.com/shubhamthakar/Mage/orchestrator/proto"
 	"google.golang.org/grpc"
 )
 
 const (
-	port = ":9000"
+	port = ":9001"
 )
 
 type UserNameServer struct {
 	pb.UnimplementedUserNameServer
 }
 
-func (s *UserNameServer) GetUserByName(ctx context.Context, in *pb.Username) (*pb.User, error) {
+func (s *UserNameServer) GetUser(ctx context.Context, in *pb.Username) (*pb.User, error) {
 	log.Printf("Received: %v", in.GetName())
 
 	const (
-		address = "localhost:9001"
+		address = "localhost:10000"
 	)
 
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
@@ -36,7 +36,7 @@ func (s *UserNameServer) GetUserByName(ctx context.Context, in *pb.Username) (*p
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
 
-	r, err := c.GetUser(ctx, &pb1.Username{Name: in.GetName()})
+	r, err := c.GetMockUserData(ctx, &pb1.Username{Name: in.GetName()})
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
