@@ -3,7 +3,7 @@ syntax = "proto3";
 
 package user_name_server;
 
-option go_package = "github.com/tech-with-moss/go-usermgmt-grpc;go_usermgmt_grpc";
+option go_package = "github.com/shubhamthakar/Mage;Mage";
 
 service UserName {
   rpc GetUserByName (Username) returns (User) {}
