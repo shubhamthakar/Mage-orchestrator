@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+
+package user_name_server;
+
+option go_package = "github.com/tech-with-moss/go-usermgmt-grpc;go_usermgmt_grpc";
+
+service UserName {
+  rpc GetUserByName (Username) returns (User) {}
+}
+
+message Username {
+  string name = 1;
+}
+
+message User {
+  string name = 1;
+  string class = 2;
+  int64 roll = 3; 
+}
+
+
+
