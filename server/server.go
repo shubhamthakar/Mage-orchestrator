@@ -19,13 +19,14 @@ type UserNameServer struct {
 	pb.UnimplementedUserNameServer
 }
 
+//Implementing interface
 func (s *UserNameServer) GetUserByName(ctx context.Context, in *pb.Username) (*pb.User, error) {
 	log.Printf("Received: %v", in.GetName())
 
 	const (
 		address = "localhost:9001"
 	)
-
+	//Establishing connection with orchestrator
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -33,19 +34,17 @@ func (s *UserNameServer) GetUserByName(ctx context.Context, in *pb.Username) (*p
 	defer conn.Close()
 	c := pb1.NewUserNameClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx1, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-
-	r, err := c.GetUser(ctx, &pb1.Username{Name: in.GetName()})
+	//Data received from orchestrator
+	r, err := c.GetUser(ctx1, &pb1.Username{Name: in.GetName()})
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		return nil,err
 	}
+	//Returning data to client
+	return &pb.User{Name: r.Name, Class: r.Class, Roll: r.Roll}, err
 
-	return &pb.User{Name: r.Name, Class: r.Class, Roll: r.Roll}, nil
 
-
-	//return nil, errors.New("not implemented yet. Shubham will implement me")
-	//return &pb.User{Name: in.GetName(), Age: in.GetAge(), Id: user_id}, nil
 }
 
 func main() {
@@ -57,6 +56,6 @@ func main() {
 	pb.RegisterUserNameServer(s, &UserNameServer{})
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+		log.Printf("failed to serve: %v", err)
 	}
 }

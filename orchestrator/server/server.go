@@ -25,7 +25,7 @@ func (s *UserNameServer) GetUser(ctx context.Context, in *pb.Username) (*pb.User
 	const (
 		address = "localhost:10000"
 	)
-
+	//Establishing connection with datamonk server at 10000
 	conn, err := grpc.Dial(address, grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
@@ -33,19 +33,16 @@ func (s *UserNameServer) GetUser(ctx context.Context, in *pb.Username) (*pb.User
 	defer conn.Close()
 	c := pb1.NewUserNameClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx1, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
-
-	r, err := c.GetMockUserData(ctx, &pb1.Username{Name: in.GetName()})
+	// r is data received from datamonk server
+	r, err := c.GetMockUserData(ctx1, &pb1.Username{Name: in.GetName()})
 	if err != nil {
-		log.Fatalf("did not connect: %v", err)
+		return nil,err
 	}
+	//returning data to orchestrator 1(server)
+	return &pb.User{Name: r.Name, Class: r.Class, Roll: r.Roll}, err
 
-	return &pb.User{Name: r.Name, Class: r.Class, Roll: r.Roll}, nil
-
-
-	//return nil, errors.New("not implemented yet. Shubham will implement me")
-	//return &pb.User{Name: in.GetName(), Age: in.GetAge(), Id: user_id}, nil
 }
 
 func main() {
