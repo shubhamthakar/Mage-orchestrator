@@ -19,21 +19,25 @@ type UserNameServer struct {
 	pb.UnimplementedUserNameServer
 }
 
+//Implementation of the interface
 func (s *UserNameServer) GetMockUserData(ctx context.Context, in *pb.Username) (*pb.User, error) {
 	log.Printf("Received: %v", in.GetName())
 	if len(in.GetName()) < 6{
-
+		
 		return nil, errors.New("length is short")
 	}
+	//Returning dummy data
 	return &pb.User{Name: in.GetName(), Class: strconv.Itoa(len(in.GetName())), Roll: int64(len(in.GetName())*10)}, nil
 	
 }
 
 func main() {
+	//Defining port number and protocol
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+	//Creating new server
 	s := grpc.NewServer()
 	pb.RegisterUserNameServer(s, &UserNameServer{})
 	log.Printf("server listening at %v", lis.Addr())
