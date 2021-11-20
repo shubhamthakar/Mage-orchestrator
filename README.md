@@ -23,19 +23,19 @@ Install dependencies(should have golang installed.)
    go version
 ```
 
-Start the datamonk server (in a new terminal)
+Start the datamonk server RPC service 3(in a new terminal)
 
 ```bash
   go run datamonk/server/server.go 
 ```
 
-Start the orchestrator2 server (in a new terminal)
+Start the orchestrator2 server RPC service 2(in a new terminal)
 
 ```bash
   go run orchestrator/server/server.go
 ```
 
-Start the orchestrator1 server (in a new terminal)
+Start the orchestrator1 server RPC service 1(in a new terminal)
 
 ```bash
   go run server/server.go
