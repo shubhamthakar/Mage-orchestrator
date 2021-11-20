@@ -17,7 +17,7 @@ Go to the project directory
   cd Mage
 ```
 
-Install dependencies(should have golang installed.)
+Check whether golang is installed
 
 ```bash
    go version
